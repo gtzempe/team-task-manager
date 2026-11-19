@@ -1,0 +1,86 @@
+{
+  "realm": "team-task-manager",
+  "enabled": true,
+  "displayName": "Team Task Manager",
+  "roles": {
+    "realm": [
+      {
+        "name": "assigner"
+      },
+      {
+        "name": "assignee"
+      }
+    ]
+  },
+  "users": [
+    {
+      "username": "assigner",
+      "enabled": true,
+      "firstName": "Team",
+      "lastName": "Assigner",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "assigner",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "assigner"
+      ]
+    },
+    {
+      "username": "assignee1",
+      "enabled": true,
+      "firstName": "Assignee",
+      "lastName": "One",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "assignee1",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "assignee"
+      ]
+    },
+    {
+      "username": "assignee2",
+      "enabled": true,
+      "firstName": "Assignee",
+      "lastName": "Two",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "assignee2",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "assignee"
+      ]
+    }
+  ],
+  "clients": [
+    {
+      "clientId": "task-manager-frontend",
+      "name": "Team Task Manager Frontend",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": true,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "redirectUris": [
+        "http://localhost:4200/*"
+      ],
+      "webOrigins": [
+        "http://localhost:4200"
+      ],
+      "attributes": {
+        "pkce.code.challenge.method": "S256"
+      }
+    }
+  ]
+}
