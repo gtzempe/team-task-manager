@@ -4,6 +4,7 @@ import com.northwind.taskmanager.task.api.dto.CreateTaskRequest;
 import com.northwind.taskmanager.task.api.dto.TaskResponse;
 import com.northwind.taskmanager.task.api.dto.UpdateTaskRequest;
 import com.northwind.taskmanager.task.api.dto.UpdateTaskStatusRequest;
+import com.northwind.taskmanager.task.domain.TaskStatus;
 import com.northwind.taskmanager.task.service.TaskService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -24,9 +25,12 @@ public class TaskController {
     }
 
     @GetMapping
-    public List<TaskResponse> getAllTasks() {
+    public List<TaskResponse> getAllTasks(
+            @RequestParam(required = false) TaskStatus status,
+            @RequestParam(required = false) String assigneeId
+            ) {
 
-        return taskService.getAllTasks();
+        return taskService.getAllTasks(status, assigneeId);
     }
 
     @GetMapping("/my")

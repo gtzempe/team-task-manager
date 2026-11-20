@@ -21,9 +21,21 @@ public class TaskService {
         this.taskRepository = taskRepository;
     }
 
-    public List<TaskResponse> getAllTasks() {
-        return taskRepository.findAllByOrderByCreatedAtDesc()
-                .stream()
+    public List<TaskResponse> getAllTasks(TaskStatus status, String assigneeId) {
+        List<Task> tasks;
+
+        if (status != null && assigneeId != null) {
+            tasks = taskRepository
+                    .findAllByStatusAndAssigneeIdOrderByCreatedAtDesc(status, assigneeId);
+        } else if (status != null) {
+            tasks = taskRepository.findAllByStatusOrderByCreatedAtDesc(status);
+        } else if (assigneeId != null) {
+            tasks = taskRepository.findAllByAssigneeIdOrderByCreatedAtDesc(assigneeId);
+        } else {
+            tasks = taskRepository.findAllByOrderByCreatedAtDesc();
+        }
+
+        return tasks.stream()
                 .map(this::toResponse)
                 .toList();
     }
