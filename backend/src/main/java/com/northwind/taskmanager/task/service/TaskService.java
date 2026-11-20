@@ -70,7 +70,7 @@ public class TaskService {
         return toResponse(savedTask);
     }
 
-    public TaskResponse updateTaskStatus(
+    public TaskResponse updateTaskStatusForAssignee(
             Long taskId,
             String assigneeId,
             TaskStatus newStatus
@@ -80,11 +80,52 @@ public class TaskService {
                         new ResponseStatusException(HttpStatus.NOT_FOUND, "Task not found")
                 );
 
+        if (!isValidStatusTransition(task.getStatus(), newStatus)) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Invalid status transition"
+            );
+        }
+
         task.setStatus(newStatus);
 
         Task updatedTask = taskRepository.save(task);
 
         return toResponse(updatedTask);
+    }
+
+    public TaskResponse updateTaskStatusForAssigner(
+            Long taskId,
+            TaskStatus newStatus
+    ) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() ->
+                        new ResponseStatusException(HttpStatus.NOT_FOUND, "Task not found")
+                );
+
+        task.setStatus(newStatus);
+
+        return toResponse(taskRepository.save(task));
+    }
+
+    private boolean isValidStatusTransition(
+            TaskStatus currentStatus,
+            TaskStatus newStatus
+    ) {
+        if (currentStatus == newStatus) {
+            return true;
+        }
+
+        return switch (currentStatus) {
+            case TODO ->
+                    newStatus == TaskStatus.IN_PROGRESS
+                            || newStatus == TaskStatus.BLOCKED;
+            case IN_PROGRESS ->
+                    newStatus == TaskStatus.DONE
+                            || newStatus == TaskStatus.BLOCKED;
+            case BLOCKED -> newStatus == TaskStatus.IN_PROGRESS;
+            case DONE -> false;
+        };
     }
 }
 

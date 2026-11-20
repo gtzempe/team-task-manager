@@ -41,17 +41,25 @@ public class TaskController {
                 jwt.getSubject(), jwt.getClaimAsString("preferred_username"));
     }
 
-    @PatchMapping("/{taskId}/status")
-    public TaskResponse updateTaskStatus(
+    @PatchMapping("/my/{taskId}/status")
+    public TaskResponse updateOwnTaskStatus(
             @PathVariable Long taskId,
             @Valid @RequestBody UpdateTaskStatusRequest request,
             @AuthenticationPrincipal Jwt jwt
     ) {
-        return taskService.updateTaskStatus(
+        return taskService.updateTaskStatusForAssignee(
                 taskId,
                 jwt.getSubject(),
                 request.status()
         );
+    }
+
+    @PatchMapping("/{taskId}/status")
+    public TaskResponse updateAnyTaskStatus(
+            @PathVariable Long taskId,
+            @Valid @RequestBody UpdateTaskStatusRequest request
+    ) {
+        return taskService.updateTaskStatusForAssigner(taskId, request.status());
     }
 
 
