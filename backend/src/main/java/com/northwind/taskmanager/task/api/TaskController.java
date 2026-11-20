@@ -2,6 +2,7 @@ package com.northwind.taskmanager.task.api;
 
 import com.northwind.taskmanager.task.api.dto.CreateTaskRequest;
 import com.northwind.taskmanager.task.api.dto.TaskResponse;
+import com.northwind.taskmanager.task.api.dto.UpdateTaskRequest;
 import com.northwind.taskmanager.task.api.dto.UpdateTaskStatusRequest;
 import com.northwind.taskmanager.task.service.TaskService;
 import jakarta.validation.Valid;
@@ -60,6 +61,14 @@ public class TaskController {
             @Valid @RequestBody UpdateTaskStatusRequest request
     ) {
         return taskService.updateTaskStatusForAssigner(taskId, request.status());
+    }
+
+    @PutMapping("/{taskId}")
+    public TaskResponse updateTask(
+            @PathVariable Long taskId,
+            @Valid @RequestBody UpdateTaskRequest request
+    ) {
+        return taskService.updateTask(taskId, request);
     }
 
     @DeleteMapping("/{taskId}")

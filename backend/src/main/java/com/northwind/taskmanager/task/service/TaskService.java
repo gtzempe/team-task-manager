@@ -1,6 +1,7 @@
 package com.northwind.taskmanager.task.service;
 
 import com.northwind.taskmanager.task.api.dto.CreateTaskRequest;
+import com.northwind.taskmanager.task.api.dto.UpdateTaskRequest;
 import com.northwind.taskmanager.task.domain.Task;
 import com.northwind.taskmanager.task.domain.TaskStatus;
 import com.northwind.taskmanager.task.repository.TaskRepository;
@@ -106,6 +107,24 @@ public class TaskService {
         task.setStatus(newStatus);
 
         return toResponse(taskRepository.save(task));
+    }
+
+    public TaskResponse updateTask(Long taskId, UpdateTaskRequest request) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() ->
+                        new ResponseStatusException(HttpStatus.NOT_FOUND, "Task not found")
+                );
+
+        task.setTitle(request.title());
+        task.setDescription(request.description());
+        task.setPriority(request.priority());
+        task.setDueDate(request.dueDate());
+        task.setAssigneeId(request.assigneeId());
+        task.setAssigneeUsername(request.assigneeUsername());
+
+        Task updatedTask = taskRepository.save(task);
+
+        return toResponse(updatedTask);
     }
 
     public void deleteTask(Long taskId) {
