@@ -2,9 +2,12 @@ package com.northwind.taskmanager.task.service;
 
 import com.northwind.taskmanager.task.api.dto.CreateTaskRequest;
 import com.northwind.taskmanager.task.domain.Task;
+import com.northwind.taskmanager.task.domain.TaskStatus;
 import com.northwind.taskmanager.task.repository.TaskRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import com.northwind.taskmanager.task.api.dto.TaskResponse;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -66,4 +69,28 @@ public class TaskService {
 
         return toResponse(savedTask);
     }
+
+    public TaskResponse updateTaskStatus(
+            Long taskId,
+            String assigneeId,
+            TaskStatus newStatus
+    ) {
+        Task task = taskRepository.findByIdAndAssigneeId(taskId, assigneeId)
+                .orElseThrow(() ->
+                        new ResponseStatusException(HttpStatus.NOT_FOUND, "Task not found")
+                );
+
+        task.setStatus(newStatus);
+
+        Task updatedTask = taskRepository.save(task);
+
+        return toResponse(updatedTask);
+    }
 }
+
+
+
+
+
+
+

@@ -2,6 +2,7 @@ package com.northwind.taskmanager.task.api;
 
 import com.northwind.taskmanager.task.api.dto.CreateTaskRequest;
 import com.northwind.taskmanager.task.api.dto.TaskResponse;
+import com.northwind.taskmanager.task.api.dto.UpdateTaskStatusRequest;
 import com.northwind.taskmanager.task.service.TaskService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -38,6 +39,19 @@ public class TaskController {
                                    @AuthenticationPrincipal Jwt jwt) {
         return taskService.createTask(request,
                 jwt.getSubject(), jwt.getClaimAsString("preferred_username"));
+    }
+
+    @PatchMapping("/{taskId}/status")
+    public TaskResponse updateTaskStatus(
+            @PathVariable Long taskId,
+            @Valid @RequestBody UpdateTaskStatusRequest request,
+            @AuthenticationPrincipal Jwt jwt
+    ) {
+        return taskService.updateTaskStatus(
+                taskId,
+                jwt.getSubject(),
+                request.status()
+        );
     }
 
 

@@ -22,6 +22,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/tasks").hasRole("assigner")
                         .requestMatchers(HttpMethod.GET, "/api/tasks/my").hasRole("assignee")
                         .requestMatchers(HttpMethod.POST, "/api/tasks").hasRole("assigner")
+                        .requestMatchers(HttpMethod.PATCH, "/api/tasks/*/status").hasRole("assignee")
                         .requestMatchers("/api/**").authenticated()
                         .anyRequest().permitAll()
                 )
