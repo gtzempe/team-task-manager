@@ -108,6 +108,15 @@ public class TaskService {
         return toResponse(taskRepository.save(task));
     }
 
+    public void deleteTask(Long taskId) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() ->
+                        new ResponseStatusException(HttpStatus.NOT_FOUND, "Task not found")
+                );
+
+        taskRepository.delete(task);
+    }
+
     private boolean isValidStatusTransition(
             TaskStatus currentStatus,
             TaskStatus newStatus

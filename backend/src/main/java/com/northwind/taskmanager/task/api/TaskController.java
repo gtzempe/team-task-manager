@@ -62,5 +62,11 @@ public class TaskController {
         return taskService.updateTaskStatusForAssigner(taskId, request.status());
     }
 
+    @DeleteMapping("/{taskId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteTask(@PathVariable Long taskId) {
+        taskService.deleteTask(taskId);
+    }
+
 
 }

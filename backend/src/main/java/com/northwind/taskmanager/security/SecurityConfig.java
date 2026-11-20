@@ -24,6 +24,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/tasks").hasRole("assigner")
                         .requestMatchers(HttpMethod.PATCH, "/api/tasks/my/*/status").hasRole("assignee")
                         .requestMatchers(HttpMethod.PATCH, "/api/tasks/*/status").hasRole("assigner")
+                        .requestMatchers(HttpMethod.DELETE, "/api/tasks/*").hasRole("assigner")
                         .requestMatchers("/api/**").authenticated()
                         .anyRequest().permitAll()
                 )
