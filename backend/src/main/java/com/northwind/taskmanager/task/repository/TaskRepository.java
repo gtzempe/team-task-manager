@@ -1,6 +1,6 @@
-package com.tzempe.taskmanager.task.repository;
+package com.northwind.taskmanager.task.repository;
 
-import com.tzempe.taskmanager.task.domain.Task;
+import com.northwind.taskmanager.task.domain.Task;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

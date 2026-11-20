@@ -1,9 +1,9 @@
-package com.tzempe.taskmanager.task.service;
+package com.northwind.taskmanager.task.service;
 
-import com.tzempe.taskmanager.task.domain.Task;
-import com.tzempe.taskmanager.task.repository.TaskRepository;
+import com.northwind.taskmanager.task.domain.Task;
+import com.northwind.taskmanager.task.repository.TaskRepository;
 import org.springframework.stereotype.Service;
-import com.tzempe.taskmanager.task.api.dto.TaskResponse;
+import com.northwind.taskmanager.task.api.dto.TaskResponse;
 
 import java.util.List;
 

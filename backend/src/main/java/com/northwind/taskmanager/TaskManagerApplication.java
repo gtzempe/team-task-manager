@@ -1,4 +1,4 @@
-package com.tzempe.taskmanager;
+package com.northwind.taskmanager;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

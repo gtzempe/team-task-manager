@@ -1,4 +1,4 @@
-package com.tzempe.taskmanager.task.domain;
+package com.northwind.taskmanager.task.domain;
 
 public enum TaskPriority {
     LOW,

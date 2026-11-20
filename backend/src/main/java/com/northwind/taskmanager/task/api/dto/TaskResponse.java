@@ -1,7 +1,7 @@
-package com.tzempe.taskmanager.task.api.dto;
+package com.northwind.taskmanager.task.api.dto;
 
-import com.tzempe.taskmanager.task.domain.TaskPriority;
-import com.tzempe.taskmanager.task.domain.TaskStatus;
+import com.northwind.taskmanager.task.domain.TaskPriority;
+import com.northwind.taskmanager.task.domain.TaskStatus;
 
 import java.time.Instant;
 import java.time.LocalDate;
