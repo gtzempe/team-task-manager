@@ -1,5 +1,6 @@
 package com.northwind.taskmanager.task.service;
 
+import com.northwind.taskmanager.task.api.dto.CreateTaskRequest;
 import com.northwind.taskmanager.task.domain.Task;
 import com.northwind.taskmanager.task.repository.TaskRepository;
 import org.springframework.stereotype.Service;
@@ -43,5 +44,26 @@ public class TaskService {
                 task.getCreatedByUsername(),
                 task.getCreatedAt()
         );
+    }
+
+    public TaskResponse createTask(
+            CreateTaskRequest request,
+            String createdById,
+            String createdByUsername
+    ) {
+        Task task = new Task(
+                request.title(),
+                request.description(),
+                request.priority(),
+                request.dueDate(),
+                request.assigneeId(),
+                request.assigneeUsername(),
+                createdById,
+                createdByUsername
+        );
+
+        Task savedTask = taskRepository.save(task);
+
+        return toResponse(savedTask);
     }
 }
