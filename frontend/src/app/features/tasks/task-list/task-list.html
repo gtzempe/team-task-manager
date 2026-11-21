@@ -1,1 +1,39 @@
-<p>task-list works!</p>
+<h1>Tasks</h1>
+
+@if (isLoading) {
+  <p>Loading Tasks...</p>
+} @else if (errorMessage) {
+  <p role="alert">{{ errorMessage }}</p>
+} @else if (tasks.length === 0) {
+  <p>No tasks found...</p>
+} @else {
+  <table>
+    <caption>
+      Task List
+    </caption>
+    <thead>
+      <tr>
+        <th scope="col">Title</th>
+        <th scope="col">Status</th>
+        <th scope="col">Priority</th>
+        <th scope="col">Due Date</th>
+        <th scope="col">Assignee</th>
+        <th scope="col">Created by</th>
+        <th scope="col">Created at</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (task of tasks; track task.id) {
+        <tr>
+          <td>{{ task.title }}</td>
+          <td>{{ task.status }}</td>
+          <td>{{ task.priority }}</td>
+          <td>{{ task.dueDate }}</td>
+          <td>{{ task.assigneeUsername }}</td>
+          <td>{{ task.createdByUsername }}</td>
+          <td>{{ task.createdAt }}</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+}

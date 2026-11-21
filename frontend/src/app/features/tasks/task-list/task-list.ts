@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Task } from '../task.model';
 import { AuthService } from '../../auth/auth.service';
 import { TaskApiService } from '../task-api.service';
@@ -18,6 +18,7 @@ export class TaskList implements OnInit {
   constructor(
     private readonly authService: AuthService,
     private readonly taskApiService: TaskApiService,
+    private readonly changeDetectorRef: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
@@ -40,10 +41,12 @@ export class TaskList implements OnInit {
       next: (tasks) => {
         this.tasks = tasks;
         this.isLoading = false;
+        this.changeDetectorRef.markForCheck();
       },
       error: () => {
         this.errorMessage = 'Unable to load tasks';
         this.isLoading = false;
+        this.changeDetectorRef.markForCheck();
       },
     });
   }
