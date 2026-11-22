@@ -1,5 +1,5 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { Task } from '../task.model';
+import { Task, TaskStatus } from '../task.model';
 import { AuthService } from '../../auth/auth.service';
 import { TaskApiService } from '../task-api.service';
 import { Observable } from 'rxjs';
@@ -13,7 +13,9 @@ import { Observable } from 'rxjs';
 export class TaskList implements OnInit {
   tasks: Task[] = [];
   isLoading = true;
+  canUpdateTaskStatus = false;
   errorMessage = '';
+  statusErrorMessage = '';
 
   constructor(
     private readonly authService: AuthService,
@@ -22,6 +24,8 @@ export class TaskList implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.canUpdateTaskStatus = this.authService.isAssignee();
+
     if (this.authService.isAssigner()) {
       this.loadTasks(this.taskApiService.getAllTasks());
       return;
@@ -46,6 +50,24 @@ export class TaskList implements OnInit {
       error: () => {
         this.errorMessage = 'Unable to load tasks';
         this.isLoading = false;
+        this.changeDetectorRef.markForCheck();
+      },
+    });
+  }
+
+  updateTaskStatus(task: Task, event: Event): void {
+    const selectElement = event.target as HTMLSelectElement;
+    const newStatus = selectElement.value as TaskStatus;
+
+    this.taskApiService.updateMyTaskStatus(task.id, newStatus).subscribe({
+      next: (updatedTask) => {
+        task.status = updatedTask.status;
+        this.statusErrorMessage = '';
+        this.changeDetectorRef.markForCheck();
+      },
+      error: () => {
+        this.statusErrorMessage = 'Unable to update task status';
+        selectElement.value = task.status;
         this.changeDetectorRef.markForCheck();
       },
     });

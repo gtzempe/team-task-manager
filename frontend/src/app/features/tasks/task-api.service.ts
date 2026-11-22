@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Task } from './task.model';
+import { Task, TaskStatus } from './task.model';
 
 @Injectable({
   providedIn: 'root',
@@ -17,5 +17,9 @@ export class TaskApiService {
 
   getMyTasks(): Observable<Task[]> {
     return this.http.get<Task[]>(`${this.apiUrl}/my`);
+  }
+
+  updateMyTaskStatus(taskId: number, status: TaskStatus): Observable<Task> {
+    return this.http.patch<Task>(`${this.apiUrl}/my/${taskId}/status`, { status });
   }
 }
