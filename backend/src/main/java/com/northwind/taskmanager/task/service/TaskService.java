@@ -1,5 +1,7 @@
 package com.northwind.taskmanager.task.service;
 
+import com.northwind.taskmanager.assignee.api.dto.AssigneeResponse;
+import com.northwind.taskmanager.assignee.service.AssigneeService;
 import com.northwind.taskmanager.task.api.dto.CreateTaskRequest;
 import com.northwind.taskmanager.task.api.dto.UpdateTaskRequest;
 import com.northwind.taskmanager.task.domain.Task;
@@ -16,9 +18,11 @@ import java.util.List;
 public class TaskService {
 
     private final TaskRepository taskRepository;
+    private final AssigneeService assigneeService;
 
-    public TaskService(TaskRepository taskRepository) {
+    public TaskService(TaskRepository taskRepository, AssigneeService assigneeService) {
         this.taskRepository = taskRepository;
+        this.assigneeService = assigneeService;
     }
 
     public List<TaskResponse> getAllTasks(TaskStatus status, String assigneeId) {
@@ -67,13 +71,16 @@ public class TaskService {
             String createdById,
             String createdByUsername
     ) {
+        AssigneeResponse assignee =
+                assigneeService.getAssigneeById(request.assigneeId());
+
         Task task = new Task(
                 request.title(),
                 request.description(),
                 request.priority(),
                 request.dueDate(),
-                request.assigneeId(),
-                request.assigneeUsername(),
+                assignee.id(),
+                assignee.username(),
                 createdById,
                 createdByUsername
         );

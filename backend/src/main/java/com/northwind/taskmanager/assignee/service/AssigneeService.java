@@ -3,10 +3,12 @@ package com.northwind.taskmanager.assignee.service;
 import com.northwind.taskmanager.assignee.api.dto.AssigneeResponse;
 import com.northwind.taskmanager.assignee.client.KeycloakAssigneeResponse;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.oauth2.client.web.client.RequestAttributeClientRegistrationIdResolver;
 import org.springframework.security.oauth2.client.web.client.RequestAttributePrincipalResolver;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -31,5 +33,14 @@ public class AssigneeService {
         return keycloakAssignees.stream()
                 .map(user -> new AssigneeResponse(user.id(), user.username()))
                 .toList();
+    }
+
+    public AssigneeResponse getAssigneeById(String id) {
+        return getAssignees().stream()
+                .filter(assignee -> assignee.id().equals(id))
+                .findFirst()
+                .orElseThrow(() ->
+                        new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid assignee")
+                );
     }
 }
