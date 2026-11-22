@@ -67,7 +67,8 @@
       "serviceAccountClientId": "task-manager-backend",
       "clientRoles": {
         "realm-management": [
-          "view-users"
+          "view-users",
+          "view-realm"
         ]
       }
     }
@@ -102,6 +103,9 @@
       "clientAuthenticatorType": "client-secret",
       "secret": "task-manager-backend-dev-secret",
       "serviceAccountsEnabled": true,
+      "defaultClientScopes": [
+        "kc-admin-api"
+      ],
       "standardFlowEnabled": false,
       "directAccessGrantsEnabled": false
     }
