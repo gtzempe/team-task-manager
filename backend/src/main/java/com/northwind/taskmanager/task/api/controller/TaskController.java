@@ -1,4 +1,4 @@
-package com.northwind.taskmanager.task.api;
+package com.northwind.taskmanager.task.api.controller;
 
 import com.northwind.taskmanager.task.api.dto.CreateTaskRequest;
 import com.northwind.taskmanager.task.api.dto.TaskResponse;
