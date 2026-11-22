@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Task, TaskStatus } from './task.model';
+import { CreateTaskRequest } from './create-task-request.model';
 
 @Injectable({
   providedIn: 'root',
@@ -21,5 +22,9 @@ export class TaskApiService {
 
   updateMyTaskStatus(taskId: number, status: TaskStatus): Observable<Task> {
     return this.http.patch<Task>(`${this.apiUrl}/my/${taskId}/status`, { status });
+  }
+
+  createTask(request: CreateTaskRequest): Observable<Task> {
+    return this.http.post<Task>(this.apiUrl, request);
   }
 }
