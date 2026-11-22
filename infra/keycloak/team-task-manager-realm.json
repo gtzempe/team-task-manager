@@ -60,6 +60,16 @@
       "realmRoles": [
         "assignee"
       ]
+    },
+    {
+      "username": "service-account-task-manager-backend",
+      "enabled": true,
+      "serviceAccountClientId": "task-manager-backend",
+      "clientRoles": {
+        "realm-management": [
+          "view-users"
+        ]
+      }
     }
   ],
   "clients": [
@@ -82,6 +92,18 @@
       "attributes": {
         "pkce.code.challenge.method": "S256"
       }
+    },
+    {
+      "clientId": "task-manager-backend",
+      "name": "Task Manager Backend",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "task-manager-backend-dev-secret",
+      "serviceAccountsEnabled": true,
+      "standardFlowEnabled": false,
+      "directAccessGrantsEnabled": false
     }
   ]
 }
