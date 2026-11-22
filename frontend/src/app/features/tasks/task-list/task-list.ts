@@ -17,6 +17,13 @@ export class TaskList implements OnInit {
   errorMessage = '';
   statusErrorMessage = '';
 
+  readonly statusOptions: Record<TaskStatus, TaskStatus[]> = {
+    TODO: ['TODO', 'IN_PROGRESS', 'BLOCKED'],
+    IN_PROGRESS: ['IN_PROGRESS', 'DONE', 'BLOCKED'],
+    BLOCKED: ['BLOCKED', 'IN_PROGRESS'],
+    DONE: ['DONE'],
+  };
+
   constructor(
     private readonly authService: AuthService,
     private readonly taskApiService: TaskApiService,

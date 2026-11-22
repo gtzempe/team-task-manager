@@ -36,10 +36,9 @@
                 (change)="updateTaskStatus(task, $event)"
                 aria-label="Update status for {{ task.title }}"
               >
-                <option value="TODO">TODO</option>
-                <option value="IN_PROGRESS">IN_PROGRESS</option>
-                <option value="DONE">DONE</option>
-                <option value="BLOCKED">BLOCKED</option>
+                @for (status of statusOptions[task.status]; track status) {
+                  <option [value]="status">{{ status }}</option>
+                }
               </select>
             } @else {
               {{ task.status }}
