@@ -1,12 +1,12 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
 import { Task, TaskStatus } from '../task.model';
 import { AuthService } from '../../auth/auth.service';
 import { TaskApiService } from '../task-api.service';
 import { Observable } from 'rxjs';
-import { RouterLink } from '@angular/router';
+import { TaskForm } from '../task-form/task-form';
 
 @Component({
-  imports: [RouterLink],
+  imports: [TaskForm],
   selector: 'app-task-list',
   styleUrl: './task-list.scss',
   templateUrl: './task-list.html',
@@ -20,6 +20,10 @@ export class TaskList implements OnInit {
   canCreateTasks = false;
   deleteErrorMessage = '';
   deletingTaskId: number | null = null;
+  isTaskFormOpen = false;
+  selectedTaskId: number | null = null;
+
+  @ViewChild('taskDialog') taskDialog!: ElementRef<HTMLDialogElement>;
 
   readonly statusOptions: Record<TaskStatus, TaskStatus[]> = {
     TODO: ['TODO', 'IN_PROGRESS', 'BLOCKED'],
@@ -108,5 +112,24 @@ export class TaskList implements OnInit {
         this.changeDetectorRef.markForCheck();
       },
     });
+  }
+
+  openTaskForm(taskId: number | null): void {
+    this.selectedTaskId = taskId;
+    this.isTaskFormOpen = true;
+    this.taskDialog.nativeElement.showModal();
+  }
+
+  closeTaskForm(): void {
+    this.taskDialog.nativeElement.close();
+    this.isTaskFormOpen = false;
+    this.selectedTaskId = null;
+  }
+
+  onTaskSaved(): void {
+    this.closeTaskForm();
+    this.isLoading = true;
+    this.errorMessage = '';
+    this.loadTasks(this.taskApiService.getAllTasks());
   }
 }

@@ -55,13 +55,7 @@
       <p role="alert">{{ submitErrorMessage }}</p>
     }
 
-    @if (createdTask) {
-      <p role="status">
-        Task "{{ createdTask.title }}" {{ taskId === null ? 'created' : 'updated' }}.
-      </p>
-    }
-
-    <button type="button" routerLink="/">Back to tasks</button>
+    <button type="button" (click)="cancel()">Cancel</button>
 
     <button type="submit" [disabled]="form.invalid || isSubmitting">
       {{ isSubmitting ? 'Saving...' : taskId === null ? 'Create task' : 'Save changes' }}

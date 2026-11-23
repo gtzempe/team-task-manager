@@ -1,18 +1,30 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Assignee } from '../../assignees/assignee.model';
 import { AssigneeApiService } from '../../assignees/assignee-api.service';
-import { Task, TaskPriority } from '../task.model';
+import { TaskPriority } from '../task.model';
 import { TaskApiService } from '../task-api.service';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 @Component({
-  imports: [ReactiveFormsModule, RouterLink],
+  imports: [ReactiveFormsModule],
   selector: 'app-task-form',
   templateUrl: './task-form.html',
 })
-export class TaskForm implements OnInit {
+export class TaskForm implements OnInit, OnChanges {
   readonly priorityOptions: TaskPriority[] = ['LOW', 'MEDIUM', 'HIGH'];
+
+  @Input() taskId: number | null = null;
+  @Output() saved = new EventEmitter<void>();
+  @Output() cancelled = new EventEmitter<void>();
 
   readonly form = new FormGroup({
     title: new FormControl('', {
@@ -39,8 +51,6 @@ export class TaskForm implements OnInit {
   isSubmitting = false;
   assigneeErrorMessage = '';
   submitErrorMessage = '';
-  createdTask: Task | null = null;
-  taskId: number | null = null;
   isLoadingTask = false;
   taskErrorMessage = '';
 
@@ -48,17 +58,9 @@ export class TaskForm implements OnInit {
     private readonly assigneeApiService: AssigneeApiService,
     private readonly taskApiService: TaskApiService,
     private readonly changeDetectorRef: ChangeDetectorRef,
-    private readonly route: ActivatedRoute,
-    private readonly router: Router,
   ) {}
 
   ngOnInit(): void {
-    const taskId = this.route.snapshot.paramMap.get('taskId');
-
-    if (taskId !== null) {
-      this.taskId = Number(taskId);
-      this.loadTaskForEdit();
-    }
     this.assigneeApiService.getAssignees().subscribe({
       next: (assignees) => {
         this.assignees = assignees;
@@ -73,6 +75,12 @@ export class TaskForm implements OnInit {
     });
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['taskId'] && this.taskId !== null) {
+      this.loadTaskForEdit();
+    }
+  }
+
   submit(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
@@ -81,7 +89,6 @@ export class TaskForm implements OnInit {
 
     this.isSubmitting = true;
     this.submitErrorMessage = '';
-    this.createdTask = null;
 
     const request = this.form.getRawValue();
 
@@ -91,26 +98,9 @@ export class TaskForm implements OnInit {
         : this.taskApiService.updateTask(this.taskId, request);
 
     saveRequest.subscribe({
-      next: (task) => {
-        this.createdTask = task;
+      next: () => {
         this.isSubmitting = false;
-
-        if (this.taskId !== null) {
-          this.router.navigateByUrl('/');
-          return;
-        }
-
-        if (this.taskId === null) {
-          this.form.reset({
-            title: '',
-            description: '',
-            priority: 'MEDIUM',
-            dueDate: '',
-            assigneeId: '',
-          });
-        }
-
-        this.changeDetectorRef.markForCheck();
+        this.saved.emit();
       },
       error: () => {
         this.submitErrorMessage = 'Unable to save task';
@@ -118,6 +108,10 @@ export class TaskForm implements OnInit {
         this.changeDetectorRef.markForCheck();
       },
     });
+  }
+
+  cancel(): void {
+    this.cancelled.emit();
   }
 
   private loadTaskForEdit(): void {

@@ -1,7 +1,7 @@
 <h1>Tasks</h1>
 
 @if (canCreateTasks) {
-  <a routerLink="/tasks/new">Create task</a>
+  <button type="button" (click)="openTaskForm(null)">Create task</button>
 }
 @if (isLoading) {
   <p>Loading Tasks...</p>
@@ -62,7 +62,7 @@
           <td>{{ task.createdAt }}</td>
           @if (canCreateTasks) {
             <td>
-              <button type="button" [routerLink]="['/tasks', task.id, 'edit']">Edit</button>
+              <button type="button" (click)="openTaskForm(task.id)">Edit</button>
 
               <button
                 type="button"
@@ -78,3 +78,12 @@
     </tbody>
   </table>
 }
+<dialog #taskDialog (close)="closeTaskForm()">
+  @if (isTaskFormOpen) {
+    <app-task-form
+      [taskId]="selectedTaskId"
+      (saved)="onTaskSaved()"
+      (cancelled)="closeTaskForm()"
+    />
+  }
+</dialog>
