@@ -3,9 +3,10 @@ import { Task, TaskStatus } from '../task.model';
 import { AuthService } from '../../auth/auth.service';
 import { TaskApiService } from '../task-api.service';
 import { Observable } from 'rxjs';
+import { RouterLink } from '@angular/router';
 
 @Component({
-  imports: [],
+  imports: [RouterLink],
   selector: 'app-task-list',
   styleUrl: './task-list.scss',
   templateUrl: './task-list.html',
@@ -16,6 +17,7 @@ export class TaskList implements OnInit {
   canUpdateTaskStatus = false;
   errorMessage = '';
   statusErrorMessage = '';
+  canCreateTasks = false;
 
   readonly statusOptions: Record<TaskStatus, TaskStatus[]> = {
     TODO: ['TODO', 'IN_PROGRESS', 'BLOCKED'],
@@ -31,9 +33,11 @@ export class TaskList implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    const isAssigner = this.authService.isAssigner();
+    this.canCreateTasks = isAssigner;
     this.canUpdateTaskStatus = this.authService.isAssignee();
 
-    if (this.authService.isAssigner()) {
+    if (isAssigner) {
       this.loadTasks(this.taskApiService.getAllTasks());
       return;
     }

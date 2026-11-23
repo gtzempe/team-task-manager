@@ -1,5 +1,8 @@
 <h1>Tasks</h1>
 
+@if (canCreateTasks) {
+  <a routerLink="/tasks/new">Create task</a>
+}
 @if (isLoading) {
   <p>Loading Tasks...</p>
 } @else if (errorMessage) {
