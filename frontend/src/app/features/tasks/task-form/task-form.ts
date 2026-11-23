@@ -2,16 +2,16 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Assignee } from '../../assignees/assignee.model';
 import { AssigneeApiService } from '../../assignees/assignee-api.service';
-import { CreateTaskRequest } from '../create-task-request.model';
 import { Task, TaskPriority } from '../task.model';
 import { TaskApiService } from '../task-api.service';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 @Component({
-  imports: [ReactiveFormsModule],
-  selector: 'app-task-create',
-  templateUrl: './task-create.html',
+  imports: [ReactiveFormsModule, RouterLink],
+  selector: 'app-task-form',
+  templateUrl: './task-form.html',
 })
-export class TaskCreate implements OnInit {
+export class TaskForm implements OnInit {
   readonly priorityOptions: TaskPriority[] = ['LOW', 'MEDIUM', 'HIGH'];
 
   readonly form = new FormGroup({
@@ -40,14 +40,25 @@ export class TaskCreate implements OnInit {
   assigneeErrorMessage = '';
   submitErrorMessage = '';
   createdTask: Task | null = null;
+  taskId: number | null = null;
+  isLoadingTask = false;
+  taskErrorMessage = '';
 
   constructor(
     private readonly assigneeApiService: AssigneeApiService,
     private readonly taskApiService: TaskApiService,
     private readonly changeDetectorRef: ChangeDetectorRef,
+    private readonly route: ActivatedRoute,
+    private readonly router: Router,
   ) {}
 
   ngOnInit(): void {
+    const taskId = this.route.snapshot.paramMap.get('taskId');
+
+    if (taskId !== null) {
+      this.taskId = Number(taskId);
+      this.loadTaskForEdit();
+    }
     this.assigneeApiService.getAssignees().subscribe({
       next: (assignees) => {
         this.assignees = assignees;
@@ -72,24 +83,66 @@ export class TaskCreate implements OnInit {
     this.submitErrorMessage = '';
     this.createdTask = null;
 
-    const request: CreateTaskRequest = this.form.getRawValue();
+    const request = this.form.getRawValue();
 
-    this.taskApiService.createTask(request).subscribe({
+    const saveRequest =
+      this.taskId === null
+        ? this.taskApiService.createTask(request)
+        : this.taskApiService.updateTask(this.taskId, request);
+
+    saveRequest.subscribe({
       next: (task) => {
         this.createdTask = task;
         this.isSubmitting = false;
-        this.form.reset({
-          title: '',
-          description: '',
-          priority: 'MEDIUM',
-          dueDate: '',
-          assigneeId: '',
-        });
+
+        if (this.taskId !== null) {
+          this.router.navigateByUrl('/');
+          return;
+        }
+
+        if (this.taskId === null) {
+          this.form.reset({
+            title: '',
+            description: '',
+            priority: 'MEDIUM',
+            dueDate: '',
+            assigneeId: '',
+          });
+        }
+
         this.changeDetectorRef.markForCheck();
       },
       error: () => {
-        this.submitErrorMessage = 'Unable to create task';
+        this.submitErrorMessage = 'Unable to save task';
         this.isSubmitting = false;
+        this.changeDetectorRef.markForCheck();
+      },
+    });
+  }
+
+  private loadTaskForEdit(): void {
+    if (this.taskId === null) {
+      return;
+    }
+
+    this.isLoadingTask = true;
+    this.taskErrorMessage = '';
+
+    this.taskApiService.getTaskById(this.taskId).subscribe({
+      next: (task) => {
+        this.form.patchValue({
+          title: task.title,
+          description: task.description ?? '',
+          priority: task.priority,
+          dueDate: task.dueDate,
+          assigneeId: task.assigneeId,
+        });
+        this.isLoadingTask = false;
+        this.changeDetectorRef.markForCheck();
+      },
+      error: () => {
+        this.taskErrorMessage = 'Unable to load task';
+        this.isLoadingTask = false;
         this.changeDetectorRef.markForCheck();
       },
     });

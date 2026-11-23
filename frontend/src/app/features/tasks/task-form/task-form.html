@@ -1,4 +1,12 @@
-<h1>Create task</h1>
+<h1>{{ taskId === null ? 'Create task' : 'Edit task' }}</h1>
+
+@if (isLoadingTask) {
+  <p>Loading task...</p>
+}
+
+@if (taskErrorMessage) {
+  <p role="alert">{{ taskErrorMessage }}</p>
+}
 
 @if (isLoadingAssignees) {
   <p>Loading assignees...</p>
@@ -8,7 +16,7 @@
   <p role="alert">{{ assigneeErrorMessage }}</p>
 }
 
-@if (!isLoadingAssignees && !assigneeErrorMessage) {
+@if (!isLoadingAssignees && !assigneeErrorMessage && !isLoadingTask && !taskErrorMessage) {
   <form [formGroup]="form" (ngSubmit)="submit()">
     <label for="title">Title</label>
     <input id="title" type="text" formControlName="title" />
@@ -48,11 +56,15 @@
     }
 
     @if (createdTask) {
-      <p role="status">Task "{{ createdTask.title }}" created.</p>
+      <p role="status">
+        Task "{{ createdTask.title }}" {{ taskId === null ? 'created' : 'updated' }}.
+      </p>
     }
 
+    <button type="button" routerLink="/">Back to tasks</button>
+
     <button type="submit" [disabled]="form.invalid || isSubmitting">
-      {{ isSubmitting ? 'Creating...' : 'Create task' }}
+      {{ isSubmitting ? 'Saving...' : taskId === null ? 'Create task' : 'Save changes' }}
     </button>
   </form>
 }
