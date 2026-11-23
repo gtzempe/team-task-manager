@@ -90,7 +90,12 @@
             }
           </td>
           <td>{{ task.priority }}</td>
-          <td>{{ task.dueDate }}</td>
+          <td>
+            {{ formatDueDate(task.dueDate) }}
+            @if (isOverdue(task)) {
+              <strong>Overdue</strong>
+            }
+          </td>
           <td>{{ task.assigneeUsername }}</td>
           <td>{{ task.createdByUsername }}</td>
           <td>{{ task.createdAt }}</td>

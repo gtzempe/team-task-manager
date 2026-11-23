@@ -185,4 +185,19 @@ export class TaskList implements OnInit {
 
     this.loadTasks(this.taskApiService.getAllTasks(status, assigneeId));
   }
+
+  isOverdue(task: Task): boolean {
+    const today = new Date();
+    const todayString =
+      `${today.getFullYear()}-` +
+      `${String(today.getMonth() + 1).padStart(2, '0')}-` +
+      `${String(today.getDate()).padStart(2, '0')}`;
+
+    return task.status !== 'DONE' && task.dueDate < todayString;
+  }
+
+  formatDueDate(dueDate: string): string {
+    const [year, month, day] = dueDate.split('-');
+    return `${day}-${month}-${year}`;
+  }
 }
