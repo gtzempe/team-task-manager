@@ -38,6 +38,11 @@ public class TaskController {
         return taskService.getTasksForAssignee(jwt.getSubject());
     }
 
+    @GetMapping("/{taskId}")
+    public TaskResponse getTaskById(@PathVariable Long taskId) {
+        return taskService.getTaskById(taskId);
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public TaskResponse createTask(@Valid @RequestBody CreateTaskRequest request,

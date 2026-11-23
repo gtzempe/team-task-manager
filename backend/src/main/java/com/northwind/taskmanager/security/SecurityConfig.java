@@ -31,11 +31,12 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.GET, "/api/tasks").hasRole("assigner")
                         .requestMatchers(HttpMethod.GET, "/api/tasks/my").hasRole("assignee")
+                        .requestMatchers(HttpMethod.GET, "/api/tasks/*").hasRole("assigner")
                         .requestMatchers(HttpMethod.POST, "/api/tasks").hasRole("assigner")
                         .requestMatchers(HttpMethod.PATCH, "/api/tasks/my/*/status").hasRole("assignee")
                         .requestMatchers(HttpMethod.PATCH, "/api/tasks/*/status").hasRole("assigner")
-                        .requestMatchers(HttpMethod.DELETE, "/api/tasks/*").hasRole("assigner")
                         .requestMatchers(HttpMethod.PUT, "/api/tasks/*").hasRole("assigner")
+                        .requestMatchers(HttpMethod.DELETE, "/api/tasks/*").hasRole("assigner")
                         .requestMatchers(HttpMethod.GET, "/api/assignees").hasRole("assigner")
                         .requestMatchers("/api/**").authenticated()
                         .anyRequest().permitAll()

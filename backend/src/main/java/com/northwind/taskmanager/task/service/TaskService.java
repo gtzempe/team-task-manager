@@ -44,6 +44,15 @@ public class TaskService {
                 .toList();
     }
 
+    public TaskResponse getTaskById(Long taskId) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() ->
+                        new ResponseStatusException(HttpStatus.NOT_FOUND, "Task not found")
+                );
+
+        return toResponse(task);
+    }
+
     public List<TaskResponse> getTasksForAssignee(String assigneeId) {
         return taskRepository.findAllByAssigneeIdOrderByCreatedAtDesc(assigneeId)
                 .stream()
@@ -140,7 +149,7 @@ public class TaskService {
         task.setDescription(request.description());
         task.setPriority(request.priority());
         task.setDueDate(request.dueDate());
-        task.setAssigneeId(request.assigneeId());
+        task.setAssigneeId(assignee.id());
         task.setAssigneeUsername(assignee.username());
 
         Task updatedTask = taskRepository.save(task);
