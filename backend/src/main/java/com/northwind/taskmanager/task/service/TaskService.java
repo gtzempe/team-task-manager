@@ -133,13 +133,15 @@ public class TaskService {
                 .orElseThrow(() ->
                         new ResponseStatusException(HttpStatus.NOT_FOUND, "Task not found")
                 );
+        AssigneeResponse assignee =
+                assigneeService.getAssigneeById(request.assigneeId());
 
         task.setTitle(request.title());
         task.setDescription(request.description());
         task.setPriority(request.priority());
         task.setDueDate(request.dueDate());
         task.setAssigneeId(request.assigneeId());
-        task.setAssigneeUsername(request.assigneeUsername());
+        task.setAssigneeUsername(assignee.username());
 
         Task updatedTask = taskRepository.save(task);
 

@@ -11,7 +11,6 @@ public record UpdateTaskRequest(
         String description,
         @NotNull TaskPriority priority,
         @NotNull LocalDate dueDate,
-        @NotBlank String assigneeId,
-        @NotBlank String assigneeUsername
+        @NotBlank String assigneeId
         ) {
 }
