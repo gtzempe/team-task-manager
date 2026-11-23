@@ -1,0 +1,58 @@
+<h1>Create task</h1>
+
+@if (isLoadingAssignees) {
+  <p>Loading assignees...</p>
+}
+
+@if (assigneeErrorMessage) {
+  <p role="alert">{{ assigneeErrorMessage }}</p>
+}
+
+@if (!isLoadingAssignees && !assigneeErrorMessage) {
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <label for="title">Title</label>
+    <input id="title" type="text" formControlName="title" />
+    @if (form.controls.title.touched && form.controls.title.invalid) {
+      <p role="alert">Title is required.</p>
+    }
+
+    <label for="description">Description</label>
+    <textarea id="description" formControlName="description"></textarea>
+
+    <label for="priority">Priority</label>
+    <select id="priority" formControlName="priority">
+      @for (priority of priorityOptions; track priority) {
+        <option [value]="priority">{{ priority }}</option>
+      }
+    </select>
+
+    <label for="dueDate">Due date</label>
+    <input id="dueDate" type="date" formControlName="dueDate" />
+    @if (form.controls.dueDate.touched && form.controls.dueDate.invalid) {
+      <p role="alert">Due date is required.</p>
+    }
+
+    <label for="assigneeId">Assignee</label>
+    <select id="assigneeId" formControlName="assigneeId">
+      <option value="" disabled>Select an assignee</option>
+      @for (assignee of assignees; track assignee.id) {
+        <option [value]="assignee.id">{{ assignee.username }}</option>
+      }
+    </select>
+    @if (form.controls.assigneeId.touched && form.controls.assigneeId.invalid) {
+      <p role="alert">Assignee is required.</p>
+    }
+
+    @if (submitErrorMessage) {
+      <p role="alert">{{ submitErrorMessage }}</p>
+    }
+
+    @if (createdTask) {
+      <p role="status">Task "{{ createdTask.title }}" created.</p>
+    }
+
+    <button type="submit" [disabled]="form.invalid || isSubmitting">
+      {{ isSubmitting ? 'Creating...' : 'Create task' }}
+    </button>
+  </form>
+}
