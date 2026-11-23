@@ -13,6 +13,9 @@
   @if (statusErrorMessage) {
     <p role="alert">{{ statusErrorMessage }}</p>
   }
+  @if (deleteErrorMessage) {
+    <p role="alert">{{ deleteErrorMessage }}</p>
+  }
   <table>
     <caption>
       Task List
@@ -26,6 +29,9 @@
         <th scope="col">Assignee</th>
         <th scope="col">Created by</th>
         <th scope="col">Created at</th>
+        @if (canCreateTasks) {
+          <th scope="col">Actions</th>
+        }
       </tr>
     </thead>
     <tbody>
@@ -52,6 +58,17 @@
           <td>{{ task.assigneeUsername }}</td>
           <td>{{ task.createdByUsername }}</td>
           <td>{{ task.createdAt }}</td>
+          @if (canCreateTasks) {
+            <td>
+              <button
+                type="button"
+                [disabled]="deletingTaskId === task.id"
+                (click)="deleteTask(task)"
+              >
+                {{ deletingTaskId === task.id ? 'Deleting...' : 'Delete' }}
+              </button>
+            </td>
+          }
         </tr>
       }
     </tbody>

@@ -18,6 +18,8 @@ export class TaskList implements OnInit {
   errorMessage = '';
   statusErrorMessage = '';
   canCreateTasks = false;
+  deleteErrorMessage = '';
+  deletingTaskId: number | null = null;
 
   readonly statusOptions: Record<TaskStatus, TaskStatus[]> = {
     TODO: ['TODO', 'IN_PROGRESS', 'BLOCKED'],
@@ -79,6 +81,30 @@ export class TaskList implements OnInit {
       error: () => {
         this.statusErrorMessage = 'Unable to update task status';
         selectElement.value = task.status;
+        this.changeDetectorRef.markForCheck();
+      },
+    });
+  }
+
+  deleteTask(task: Task): void {
+    const confirmed = window.confirm(`Delete task "${task.title}"?`);
+
+    if (!confirmed) {
+      return;
+    }
+
+    this.deleteErrorMessage = '';
+    this.deletingTaskId = task.id;
+
+    this.taskApiService.deleteTask(task.id).subscribe({
+      next: () => {
+        this.tasks = this.tasks.filter((item) => item.id !== task.id);
+        this.deletingTaskId = null;
+        this.changeDetectorRef.markForCheck();
+      },
+      error: () => {
+        this.deleteErrorMessage = 'Unable to delete task';
+        this.deletingTaskId = null;
         this.changeDetectorRef.markForCheck();
       },
     });
