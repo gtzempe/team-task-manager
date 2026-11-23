@@ -1,9 +1,11 @@
 <header>
-  <p>Signed in as {{ username }}</p>
-  <button type="button" (click)="logout()">Logout</button>
-</header>
+  <h1>Tasks</h1>
 
-<h1>Tasks</h1>
+  <div class="header-actions">
+    <h4>Signed in as: {{ username }}</h4>
+    <button class="button-logout" type="button" (click)="logout()">Logout</button>
+  </div>
+</header>
 
 @if (canCreateTasks) {
   <button type="button" (click)="openTaskForm(null)">Create task</button>
@@ -46,81 +48,83 @@
   @if (deleteErrorMessage) {
     <p role="alert">{{ deleteErrorMessage }}</p>
   }
-  <table>
-    <caption>
-      Task List
-    </caption>
-    <thead>
-      <tr>
-        <th scope="col">Title</th>
-        <th scope="col" class="description-cell">Description</th>
-        <th scope="col">Status</th>
-        <th scope="col">Priority</th>
-        <th scope="col">Due Date</th>
-        <th scope="col">Assignee</th>
-        <th scope="col">Created by</th>
-        <th scope="col">Created at</th>
-        @if (canCreateTasks) {
-          <th scope="col">Actions</th>
-        }
-      </tr>
-    </thead>
-    <tbody>
-      @for (task of tasks; track task.id) {
+  <div class="table-wrapper">
+    <table>
+      <caption>
+        Task List
+      </caption>
+      <thead>
         <tr>
-          <td>{{ task.title }}</td>
-          <td class="description-cell">{{ task.description?.trim() || '—' }}</td>
-          <td>
-            @if (canUpdateTaskStatus || canCreateTasks) {
-              <select
-                (change)="updateTaskStatus(task, $event)"
-                aria-label="Update status for {{ task.title }}"
-              >
-                @if (canCreateTasks) {
-                  @for (status of allTaskStatuses; track status) {
-                    <option [value]="status" [selected]="status === task.status">
-                      {{ status }}
-                    </option>
-                  }
-                } @else {
-                  @for (status of statusOptions[task.status]; track status) {
-                    <option [value]="status" [selected]="status === task.status">
-                      {{ status }}
-                    </option>
-                  }
-                }
-              </select>
-            } @else {
-              {{ task.status }}
-            }
-          </td>
-          <td>{{ task.priority }}</td>
-          <td>
-            {{ formatDueDate(task.dueDate) }}
-            @if (isOverdue(task)) {
-              <strong>Overdue</strong>
-            }
-          </td>
-          <td>{{ task.assigneeUsername }}</td>
-          <td>{{ task.createdByUsername }}</td>
-          <td>{{ task.createdAt }}</td>
+          <th scope="col">Title</th>
+          <th scope="col" class="description-cell">Description</th>
+          <th scope="col">Status</th>
+          <th scope="col">Priority</th>
+          <th scope="col">Due Date</th>
+          <th scope="col">Assignee</th>
+          <th scope="col">Created by</th>
+          <th scope="col">Created at</th>
           @if (canCreateTasks) {
-            <td>
-              <button type="button" (click)="openTaskForm(task.id)">Edit</button>
-
-              <button
-                type="button"
-                [disabled]="deletingTaskId === task.id"
-                (click)="deleteTask(task)"
-              >
-                {{ deletingTaskId === task.id ? 'Deleting...' : 'Delete' }}
-              </button>
-            </td>
+            <th scope="col">Actions</th>
           }
         </tr>
-      }
-    </tbody>
-  </table>
+      </thead>
+      <tbody>
+        @for (task of tasks; track task.id) {
+          <tr>
+            <td>{{ task.title }}</td>
+            <td class="description-cell">{{ task.description?.trim() || '—' }}</td>
+            <td>
+              @if (canUpdateTaskStatus || canCreateTasks) {
+                <select
+                  (change)="updateTaskStatus(task, $event)"
+                  aria-label="Update status for {{ task.title }}"
+                >
+                  @if (canCreateTasks) {
+                    @for (status of allTaskStatuses; track status) {
+                      <option [value]="status" [selected]="status === task.status">
+                        {{ status }}
+                      </option>
+                    }
+                  } @else {
+                    @for (status of statusOptions[task.status]; track status) {
+                      <option [value]="status" [selected]="status === task.status">
+                        {{ status }}
+                      </option>
+                    }
+                  }
+                </select>
+              } @else {
+                {{ task.status }}
+              }
+            </td>
+            <td>{{ task.priority }}</td>
+            <td>
+              {{ formatDueDate(task.dueDate) }}
+              @if (isOverdue(task)) {
+                <strong>Overdue</strong>
+              }
+            </td>
+            <td>{{ task.assigneeUsername }}</td>
+            <td>{{ task.createdByUsername }}</td>
+            <td>{{ task.createdAt }}</td>
+            @if (canCreateTasks) {
+              <td>
+                <button type="button" (click)="openTaskForm(task.id)">Edit</button>
+
+                <button
+                  type="button"
+                  [disabled]="deletingTaskId === task.id"
+                  (click)="deleteTask(task)"
+                >
+                  {{ deletingTaskId === task.id ? 'Deleting...' : 'Delete' }}
+                </button>
+              </td>
+            }
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
 }
 <dialog #taskDialog (close)="closeTaskForm()">
   @if (isTaskFormOpen) {

@@ -54,11 +54,12 @@
     @if (submitErrorMessage) {
       <p role="alert">{{ submitErrorMessage }}</p>
     }
+    <div class="form-actions">
+      <button type="button" (click)="cancel()">Cancel</button>
 
-    <button type="button" (click)="cancel()">Cancel</button>
-
-    <button type="submit" [disabled]="form.invalid || isSubmitting">
-      {{ isSubmitting ? 'Saving...' : taskId === null ? 'Create task' : 'Save changes' }}
-    </button>
+      <button type="submit" [disabled]="form.invalid || isSubmitting">
+        {{ isSubmitting ? 'Saving...' : taskId === null ? 'Create task' : 'Save changes' }}
+      </button>
+    </div>
   </form>
 }

@@ -18,6 +18,7 @@ import { TaskApiService } from '../task-api.service';
   imports: [ReactiveFormsModule],
   selector: 'app-task-form',
   templateUrl: './task-form.html',
+  styleUrl: './task-form.scss',
 })
 export class TaskForm implements OnInit, OnChanges {
   readonly priorityOptions: TaskPriority[] = ['LOW', 'MEDIUM', 'HIGH'];
