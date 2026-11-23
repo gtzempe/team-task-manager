@@ -4,6 +4,8 @@ import { AuthService } from '../../auth/auth.service';
 import { TaskApiService } from '../task-api.service';
 import { Observable } from 'rxjs';
 import { TaskForm } from '../task-form/task-form';
+import { Assignee } from '../../assignees/assignee.model';
+import { AssigneeApiService } from '../../assignees/assignee-api.service';
 
 @Component({
   imports: [TaskForm],
@@ -22,6 +24,10 @@ export class TaskList implements OnInit {
   deletingTaskId: number | null = null;
   isTaskFormOpen = false;
   selectedTaskId: number | null = null;
+  assignees: Assignee[] = [];
+  assigneeFilterErrorMessage = '';
+  selectedStatus: TaskStatus | '' = '';
+  selectedAssigneeId = '';
 
   @ViewChild('taskDialog') taskDialog!: ElementRef<HTMLDialogElement>;
 
@@ -36,6 +42,7 @@ export class TaskList implements OnInit {
     private readonly authService: AuthService,
     private readonly taskApiService: TaskApiService,
     private readonly changeDetectorRef: ChangeDetectorRef,
+    private readonly assigneeApiService: AssigneeApiService,
   ) {}
 
   ngOnInit(): void {
@@ -44,6 +51,7 @@ export class TaskList implements OnInit {
     this.canUpdateTaskStatus = this.authService.isAssignee();
 
     if (isAssigner) {
+      this.loadAssignees();
       this.loadTasks(this.taskApiService.getAllTasks());
       return;
     }
@@ -67,6 +75,19 @@ export class TaskList implements OnInit {
       error: () => {
         this.errorMessage = 'Unable to load tasks';
         this.isLoading = false;
+        this.changeDetectorRef.markForCheck();
+      },
+    });
+  }
+
+  private loadAssignees(): void {
+    this.assigneeApiService.getAssignees().subscribe({
+      next: (assignees) => {
+        this.assignees = assignees;
+        this.changeDetectorRef.markForCheck();
+      },
+      error: () => {
+        this.assigneeFilterErrorMessage = 'Unable to load assignees for filters';
         this.changeDetectorRef.markForCheck();
       },
     });
@@ -128,8 +149,28 @@ export class TaskList implements OnInit {
 
   onTaskSaved(): void {
     this.closeTaskForm();
+    this.loadFilteredTasks();
+  }
+
+  onStatusFilterChange(event: Event): void {
+    const select = event.target as HTMLSelectElement;
+    this.selectedStatus = select.value as TaskStatus | '';
+    this.loadFilteredTasks();
+  }
+
+  onAssigneeFilterChange(event: Event): void {
+    const select = event.target as HTMLSelectElement;
+    this.selectedAssigneeId = select.value;
+    this.loadFilteredTasks();
+  }
+
+  private loadFilteredTasks(): void {
     this.isLoading = true;
     this.errorMessage = '';
-    this.loadTasks(this.taskApiService.getAllTasks());
+
+    const status = this.selectedStatus || undefined;
+    const assigneeId = this.selectedAssigneeId || undefined;
+
+    this.loadTasks(this.taskApiService.getAllTasks(status, assigneeId));
   }
 }

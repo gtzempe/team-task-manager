@@ -2,6 +2,31 @@
 
 @if (canCreateTasks) {
   <button type="button" (click)="openTaskForm(null)">Create task</button>
+
+  @if (assigneeFilterErrorMessage) {
+    <p role="alert">{{ assigneeFilterErrorMessage }}</p>
+  }
+
+  <label for="statusFilter">Filter by status</label>
+  <select id="statusFilter" [value]="selectedStatus" (change)="onStatusFilterChange($event)">
+    <option value="">All statuses</option>
+    <option value="TODO">TODO</option>
+    <option value="IN_PROGRESS">IN_PROGRESS</option>
+    <option value="BLOCKED">BLOCKED</option>
+    <option value="DONE">DONE</option>
+  </select>
+
+  <label for="assigneeFilter">Filter by assignee</label>
+  <select
+    id="assigneeFilter"
+    [value]="selectedAssigneeId"
+    (change)="onAssigneeFilterChange($event)"
+  >
+    <option value="">All assignees</option>
+    @for (assignee of assignees; track assignee.id) {
+      <option [value]="assignee.id">{{ assignee.username }}</option>
+    }
+  </select>
 }
 @if (isLoading) {
   <p>Loading Tasks...</p>
