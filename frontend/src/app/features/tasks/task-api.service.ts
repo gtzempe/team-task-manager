@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Task, TaskStatus } from './task.model';
 import { CreateTaskRequest } from './create-task-request.model';
+import { UpdateTaskRequest } from './update-task-request.model';
 
 @Injectable({
   providedIn: 'root',
@@ -16,6 +17,10 @@ export class TaskApiService {
     return this.http.get<Task[]>(this.apiUrl);
   }
 
+  getTaskById(taskId: number): Observable<Task> {
+    return this.http.get<Task>(`${this.apiUrl}/${taskId}`);
+  }
+
   getMyTasks(): Observable<Task[]> {
     return this.http.get<Task[]>(`${this.apiUrl}/my`);
   }
@@ -26,6 +31,10 @@ export class TaskApiService {
 
   createTask(request: CreateTaskRequest): Observable<Task> {
     return this.http.post<Task>(this.apiUrl, request);
+  }
+
+  updateTask(taskId: number, request: UpdateTaskRequest): Observable<Task> {
+    return this.http.put<Task>(`${this.apiUrl}/${taskId}`, request);
   }
 
   deleteTask(taskId: number): Observable<void> {
