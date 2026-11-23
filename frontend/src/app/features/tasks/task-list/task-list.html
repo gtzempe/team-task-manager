@@ -1,3 +1,8 @@
+<header>
+  <p>Signed in as {{ username }}</p>
+  <button type="button" (click)="logout()">Logout</button>
+</header>
+
 <h1>Tasks</h1>
 
 @if (canCreateTasks) {

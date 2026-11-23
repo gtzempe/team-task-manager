@@ -28,6 +28,7 @@ export class TaskList implements OnInit {
   assigneeFilterErrorMessage = '';
   selectedStatus: TaskStatus | '' = '';
   selectedAssigneeId = '';
+  username = '';
 
   @ViewChild('taskDialog') taskDialog!: ElementRef<HTMLDialogElement>;
 
@@ -48,6 +49,7 @@ export class TaskList implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.username = this.authService.getUsername();
     const isAssigner = this.authService.isAssigner();
     this.canCreateTasks = isAssigner;
     this.canUpdateTaskStatus = this.authService.isAssignee();
@@ -199,5 +201,9 @@ export class TaskList implements OnInit {
   formatDueDate(dueDate: string): string {
     const [year, month, day] = dueDate.split('-');
     return `${day}-${month}-${year}`;
+  }
+
+  logout(): void {
+    this.authService.logout();
   }
 }
