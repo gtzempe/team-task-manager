@@ -35,6 +35,10 @@ export class TaskApiService {
     return this.http.get<Task[]>(`${this.apiUrl}/my`);
   }
 
+  updateTaskStatusForAssigner(taskId: number, status: TaskStatus): Observable<Task> {
+    return this.http.patch<Task>(`${this.apiUrl}/${taskId}/status`, { status });
+  }
+
   updateMyTaskStatus(taskId: number, status: TaskStatus): Observable<Task> {
     return this.http.patch<Task>(`${this.apiUrl}/my/${taskId}/status`, { status });
   }

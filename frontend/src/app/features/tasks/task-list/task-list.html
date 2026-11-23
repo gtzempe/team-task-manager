@@ -66,14 +66,23 @@
           <td>{{ task.title }}</td>
           <td class="description-cell">{{ task.description?.trim() || '—' }}</td>
           <td>
-            @if (canUpdateTaskStatus) {
+            @if (canUpdateTaskStatus || canCreateTasks) {
               <select
-                [value]="task.status"
                 (change)="updateTaskStatus(task, $event)"
                 aria-label="Update status for {{ task.title }}"
               >
-                @for (status of statusOptions[task.status]; track status) {
-                  <option [value]="status">{{ status }}</option>
+                @if (canCreateTasks) {
+                  @for (status of allTaskStatuses; track status) {
+                    <option [value]="status" [selected]="status === task.status">
+                      {{ status }}
+                    </option>
+                  }
+                } @else {
+                  @for (status of statusOptions[task.status]; track status) {
+                    <option [value]="status" [selected]="status === task.status">
+                      {{ status }}
+                    </option>
+                  }
                 }
               </select>
             } @else {

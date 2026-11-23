@@ -38,6 +38,8 @@ export class TaskList implements OnInit {
     DONE: ['DONE'],
   };
 
+  readonly allTaskStatuses: TaskStatus[] = ['TODO', 'IN_PROGRESS', 'DONE', 'BLOCKED'];
+
   constructor(
     private readonly authService: AuthService,
     private readonly taskApiService: TaskApiService,
@@ -97,10 +99,20 @@ export class TaskList implements OnInit {
     const selectElement = event.target as HTMLSelectElement;
     const newStatus = selectElement.value as TaskStatus;
 
-    this.taskApiService.updateMyTaskStatus(task.id, newStatus).subscribe({
+    const updateRequest = this.canCreateTasks
+      ? this.taskApiService.updateTaskStatusForAssigner(task.id, newStatus)
+      : this.taskApiService.updateMyTaskStatus(task.id, newStatus);
+
+    updateRequest.subscribe({
       next: (updatedTask) => {
-        task.status = updatedTask.status;
         this.statusErrorMessage = '';
+
+        if (this.canCreateTasks) {
+          this.loadFilteredTasks();
+          return;
+        }
+
+        task.status = updatedTask.status;
         this.changeDetectorRef.markForCheck();
       },
       error: () => {
