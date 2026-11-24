@@ -12,7 +12,7 @@
 }
 
 header h1,
-header p {
+.header-actions h4 {
   margin: 0;
 }
 
@@ -34,23 +34,45 @@ select {
 }
 
 button {
-  background: #2563eb;
+  background: #1451d5;
   color: white;
   cursor: pointer;
 }
 
+button:hover {
+  background: #3164f3;
+}
+
+
 .button-logout {
-  background: #eb2525;
+  background: #343232;
   color: white;
   cursor: pointer;
 }
 
 .button-logout:hover {
-  background: #b91c1c;
+  background: #5a5656;
 }
 
-button:hover {
-  background: #1d4ed8;
+.button-edit {
+  background: #808080;
+  color: white;
+  cursor: pointer;
+}
+
+.button-edit:hover {
+  background: #25eb5d;
+}
+
+.button-delete {
+  background: #808080;
+  color: white;
+  cursor: pointer;
+  
+}
+
+.button-delete:hover {
+  background: #ff2828;  
 }
 
 button:disabled {
@@ -92,6 +114,10 @@ caption {
   text-align: left;
   font-size: 1.1rem;
   font-weight: 700;
+}
+
+td button + button {
+  margin-left: 0.5rem;
 }
 
 th,

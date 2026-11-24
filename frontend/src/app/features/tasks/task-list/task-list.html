@@ -109,10 +109,13 @@
             <td>{{ task.createdAt }}</td>
             @if (canCreateTasks) {
               <td>
-                <button type="button" (click)="openTaskForm(task.id)">Edit</button>
+                <button type="button" class="button-edit" (click)="openTaskForm(task.id)">
+                  Edit
+                </button>
 
                 <button
                   type="button"
+                  class="button-delete"
                   [disabled]="deletingTaskId === task.id"
                   (click)="deleteTask(task)"
                 >
