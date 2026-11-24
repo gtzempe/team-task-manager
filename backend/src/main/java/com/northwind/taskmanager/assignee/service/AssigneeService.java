@@ -2,6 +2,7 @@ package com.northwind.taskmanager.assignee.service;
 
 import com.northwind.taskmanager.assignee.api.dto.AssigneeResponse;
 import com.northwind.taskmanager.assignee.client.KeycloakAssigneeResponse;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.oauth2.client.web.client.RequestAttributeClientRegistrationIdResolver;
@@ -16,15 +17,18 @@ import java.util.List;
 public class AssigneeService {
 
     private final RestClient keycloakRestClient;
+    private final String assigneeUsersUrl;
 
-    public AssigneeService(RestClient keycloakRestClient) {
+    public AssigneeService(RestClient keycloakRestClient,
+                           @Value("${keycloak.assignee-users-url}") String assigneeUsersUrl) {
         this.keycloakRestClient = keycloakRestClient;
+        this.assigneeUsersUrl = assigneeUsersUrl;
     }
 
     public List<AssigneeResponse> getAssignees() {
         List<KeycloakAssigneeResponse> keycloakAssignees =
                 keycloakRestClient.get()
-                        .uri("http://localhost:8081/admin/realms/team-task-manager/roles/assignee/users")
+                        .uri(assigneeUsersUrl)
                         .attributes(RequestAttributeClientRegistrationIdResolver.clientRegistrationId("keycloak-service"))
                         .attributes(RequestAttributePrincipalResolver.principal("task-manager-backend"))
                         .retrieve()
