@@ -33,6 +33,33 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/taskmanager_db
+      SPRING_DATASOURCE_USERNAME: taskmanager_user
+      SPRING_DATASOURCE_PASSWORD: taskmanager
+      KEYCLOAK_BACKEND_CLIENT_SECRET: "${KEYCLOAK_BACKEND_CLIENT_SECRET:-task-manager-backend-dev-secret}"
+      KEYCLOAK_TOKEN_URI: http://keycloak:8080/realms/team-task-manager/protocol/openid-connect/token
+      KEYCLOAK_JWK_SET_URI: http://keycloak:8080/realms/team-task-manager/protocol/openid-connect/certs
+      KEYCLOAK_ASSIGNEE_USERS_URL: http://keycloak:8080/admin/realms/team-task-manager/roles/assignee/users
+    depends_on:
+      postgres:
+        condition: service_healthy
+      keycloak:
+        condition: service_started
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "4200:8080"
+    depends_on:
+      - backend
 
 volumes:
   postgres_data:
