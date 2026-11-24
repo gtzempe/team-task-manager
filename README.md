@@ -98,6 +98,14 @@ Assigners can update the status of any task.
 | `PATCH`  | `/api/tasks/my/{taskId}/status` | Assignee; own tasks only                             |
 | `GET`    | `/api/assignees`                | Assigner                                             |
 
+### Swagger UI
+
+When the application is running, interactive API documentation is available at:
+
+http://localhost:8080/swagger-ui/index.html
+
+To call protected endpoints, sign in through the frontend and copy the access token from an authenticated API request in the browser's Network tools. In Swagger UI, select **Authorize** and paste the token **without** the `Bearer ` prefix; Swagger adds that prefix to the request automatically. Use an assigner token for assigner endpoints and an assignee token for assignee endpoints. Do not share access tokens.
+
 ## Design decisions and assumptions
 
 - Each task has exactly one assignee.
