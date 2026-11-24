@@ -20,6 +20,20 @@ A full-stack task management application for a small team. Assigners create and 
 - Authentication: Keycloak with OAuth 2.0 / OpenID Connect
 - Containers: Docker Compose
 
+## Screenshots
+
+### Assigner task list
+
+![Assigner task list](docs/screenshots/assigner-task-list.png)
+
+### Create task
+
+![Create task modal](docs/screenshots/create-task-modal.png)
+
+### Assignee task list
+
+![Assignee task list](docs/screenshots/assignee-task-list.png)
+
 ## Run the application
 
 Prerequisite: Docker Desktop must be running.
